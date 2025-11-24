@@ -13,11 +13,11 @@ Dapat melakukan beberapa operasi aritmatika secara berurutan. Contoh perhitungan
 
 Hasil tersebut benar karena program menghitung ekspresi berdasarkan aturan prioritas operator, yaitu:
 
-Perkalian dan pembagian dihitung terlebih dahulu.
+- Perkalian dan pembagian dihitung terlebih dahulu.
 
-Penjumlahan dan pengurangan dilakukan setelahnya.
+- Penjumlahan dan pengurangan dilakukan setelahnya.
 
-Perhitungan dilakukan melalui fungsi calculateExpression()
+- Perhitungan dilakukan melalui fungsi calculateExpression()
 
 
 
@@ -63,6 +63,7 @@ Ketika pengguna menekan MR (Memory Recall), nilai memory akan ditampilkan pada d
 Jika pengguna hanya menggunakan memory tanpa menekan tombol “=”, maka history akan tetap menampilkan pesan:
 
 Belum ada history.
+
 
 
 
