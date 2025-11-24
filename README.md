@@ -17,6 +17,7 @@ Penjumlahan dan pengurangan dilakukan setelahnya.
 Perhitungan dilakukan melalui fungsi calculateExpression()
 
 
+
 2. History (5 Terakhir)
 
 Setiap kali tombol "=" ditekan, hasil perhitungan akan disimpan ke dalam daftar history. Contoh data history yang tampil:
@@ -40,9 +41,11 @@ Fitur history memiliki beberapa karakteristik:
 - Pengguna dapat menghapus seluruh riwayat dengan tombol “Hapus History”.
 
 
+
 3. Indikator Memory
 
 Huruf "M" yang muncul di bagian kanan atas display menunjukkan bahwa terdapat nilai yang tersimpan di memory. Indikator ini aktif ketika pengguna melakukan penyimpanan menggunakan M+ atau M-.
+
 
 
 4. Nilai Memory Ditampilkan
@@ -50,9 +53,12 @@ Huruf "M" yang muncul di bagian kanan atas display menunjukkan bahwa terdapat ni
 Nilai memory dapat ditambahkan menggunakan M+ dan dikurangi dengan M-.
 Ketika pengguna menekan MR (Memory Recall), nilai memory akan ditampilkan pada display utama.
 
+
+
 5. History Kosong
 
 Jika pengguna hanya menggunakan memory tanpa menekan tombol “=”, maka history akan tetap menampilkan pesan:
 
 Belum ada history.
+
 
