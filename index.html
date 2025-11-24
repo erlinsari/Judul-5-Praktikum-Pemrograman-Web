@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kalkulator</title>
+
+<style>
+    :root {
+      --pink: #ffbfd7;
+      --pink-dark: #ff8fb4;
+      --blue: #cde7ff;
+      --cream: #fff7ef;
+      --lavender: #e7d9ff;
+      --text: #8a5e6b;
+      --white: #ffffff;
+    }
+
+    body {
+      background: linear-gradient(135deg, var(--pink), var(--lavender));
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: "Poppins", sans-serif;
+      padding: 20px;
+    }
+
+    .calculator {
+      width: 360px;
+      background: var(--cream);
+      border-radius: 25px;
+      padding: 20px;
+      border: 2px solid var(--pink-dark);
+    }
+
+    .display-box {
+      background: var(--white);
+      border-radius: 20px;
+      padding: 15px;
+      border: 2px solid var(--pink);
+      margin-bottom: 15px;
+    }
+
+    #expressionRow {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    #expressionDisplay {
+      font-size: 0.9rem;
+      color: var(--text);
+    }
+
+    #memoryMark {
+      color: var(--pink-dark);
+      font-weight: bold;
+      display: none;
+    }
+
+    #mainDisplay {
+      width: 100%;
+      border: none;
+      font-size: 2rem;
+      text-align: right;
+      background: transparent;
+      color: var(--pink-dark);
+      font-weight: bold;
+    }
+
+    .grid { display: grid; gap: 10px; }
+    .grid.memory { grid-template-columns: repeat(5, 1fr); }
+    .grid.keys { grid-template-columns: repeat(4, 1fr); }
+
+    button {
+      padding: 14px;
+      font-size: 1rem;
+      border-radius: 16px;
+      border: 2px solid var(--pink);
+      background: var(--white);
+      cursor: pointer;
+      transition: 0.15s;
+    }
+
+    button:hover { transform: scale(1.05); }
+
+    .btn-operator {
+      background: var(--pink-dark);
+      color: white;
+      border-color: #e56792;
+    }
+
+    .btn-control {
+      background: var(--lavender);
+      color: #624a84;
+      border-color: #c4b0ff;
+    }
+
+    .btn-equals {
+      background: var(--blue);
+      border-color: #9cc8ea;
+      color: #2f4a63;
+    }
+
+    .memory-box {
+      background: var(--white);
+      border: 2px solid var(--pink-dark);
+      padding: 10px;
+      border-radius: 15px;
+      margin-top: 10px;
+      display: none;
+    }
+
+    .memory-item {
+      padding: 4px 0;
+      font-size: 0.9rem;
+      border-bottom: 1px solid #ffc7d9;
+    }
+
+    .history-box {
+      background: var(--white);
+      border: 2px solid var(--pink-dark);
+      margin-top: 18px;
+      padding: 10px;
+      border-radius: 18px;
+      max-height: 150px;
+      overflow-y: auto;
+    }
+
+    .history-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 3px 0;
+      border-bottom: 1px dashed var(--pink-dark);
+      align-items: center;
+    }
+
+    .delete-one {
+      background: var(--pink-dark);
+      color: white;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      font-size: 0.75rem;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: 0.2s;
+      margin-left: 8px;
+    }
+
+    .delete-one:hover {
+      background: #d96a8f;
+      transform: scale(1.15);
+    }
+
+    .clear-history {
+      width: 100%;
+      margin-top: 8px;
+      background: var(--pink-dark);
+      border: none;
+      color: white;
+      padding: 8px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="calculator">
+
+  <div class="display-box">
+    <div id="expressionRow">
+      <div id="expressionDisplay"></div>
+      <div id="memoryMark">M</div>
+    </div>
+    <input id="mainDisplay" readonly value="0">
+  </div>
+
+  <div class="grid memory">
+    <button data-type="memory" data-value="MC">MC</button>
+    <button data-type="memory" data-value="MR">MR</button>
+    <button data-type="memory" data-value="M+">M+</button>
+    <button data-type="memory" data-value="M-">M-</button>
+    <button data-type="memory" data-value="MV">M∨</button>
+  </div>
+
+  <div id="memoryPanel" class="memory-box">
+    <div id="memoryEmpty" style="color:#777">(Memory kosong)</div>
+    <div id="memoryItems"></div>
+  </div>
+
+  <div class="grid keys" id="keysContainer">
+    <button data-type="control" data-value="C" class="btn-control">C</button>
+    <button data-type="control" data-value="CE" class="btn-control">CE</button>
+    <button data-type="control" data-value="backspace" class="btn-control">⌫</button>
+    <button data-type="operator" data-value="/" class="btn-operator">÷</button>
+
+    <button data-type="number" data-value="7">7</button>
+    <button data-type="number" data-value="8">8</button>
+    <button data-type="number" data-value="9">9</button>
+    <button data-type="operator" data-value="*" class="btn-operator">×</button>
+
+    <button data-type="number" data-value="4">4</button>
+    <button data-type="number" data-value="5">5</button>
+    <button data-type="number" data-value="6">6</button>
+    <button data-type="operator" data-value="-" class="btn-operator">−</button>
+
+    <button data-type="number" data-value="1">1</button>
+    <button data-type="number" data-value="2">2</button>
+    <button data-type="number" data-value="3">3</button>
+    <button data-type="operator" data-value="+" class="btn-operator">+</button>
+
+    <button data-type="number" data-value="0" style="grid-column: span 2">0</button>
+    <button data-type="decimal" data-value=".">.</button>
+    <button data-type="equals" data-value="=" class="btn-equals">=</button>
+  </div>
+
+  <div class="history-box">
+    <div style="font-size:0.8rem; font-weight:bold; color:var(--text)">History (5 terakhir)</div>
+    <div id="historyList"><small>Belum ada history.</small></div>
+    <button id="clearHistoryBtn" class="clear-history">Hapus History</button>
+  </div>
+
+</div>
+
+<script>
+
+let currentInput = "0";
+let expression = "";
+let displayExpression = "";
+let justEvaluated = false;
+
+let memoryValue = 0;
+let hasMemory = false;
+
+let history = [];
+let historyId = 1;
+
+const mainDisplay = document.getElementById("mainDisplay");
+const expressionDisplay = document.getElementById("expressionDisplay");
+const memoryMark = document.getElementById("memoryMark");
+const memoryPanel = document.getElementById("memoryPanel");
+const memoryEmpty = document.getElementById("memoryEmpty");
+const memoryItems = document.getElementById("memoryItems");
+const historyList = document.getElementById("historyList");
+
+function calculateExpression(expr) {
+  const tokens = expr.match(/(\d+(\.\d+)?|[+\-*/])/g);
+  if (!tokens) return "Error";
+
+  let arr = [...tokens];
+
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] === "*" || arr[i] === "/") {
+      const left = parseFloat(arr[i - 1]);
+      const right = parseFloat(arr[i + 1]);
+
+      let sub = 0;
+      if (arr[i] === "*") sub = left * right;
+      if (arr[i] === "/") {
+        if (right === 0) return "Error";
+        sub = left / right;
+      }
+
+      arr.splice(i - 1, 3, sub.toString());
+      i = i - 1;
+    }
+  }
+
+  let result = parseFloat(arr[0]);
+  for (let i = 1; i < arr.length; i += 2) {
+    const op = arr[i];
+    const next = parseFloat(arr[i + 1]);
+
+    if (op === "+") result += next;
+    if (op === "-") result -= next;
+  }
+
+  return result;
+}
+
+function updateDisplays() {
+  mainDisplay.value = currentInput;
+  expressionDisplay.textContent = displayExpression;
+  memoryMark.style.display = hasMemory ? "block" : "none";
+  renderMemoryPanel();
+  renderHistory();
+}
+
+function renderMemoryPanel() {
+  if (!hasMemory) {
+    memoryEmpty.style.display = "block";
+    memoryItems.innerHTML = "";
+  } else {
+    memoryEmpty.style.display = "none";
+    memoryItems.innerHTML = `<div class="memory-item">${memoryValue}</div>`;
+  }
+}
+
+function renderHistory() {
+  if (history.length === 0) {
+    historyList.innerHTML = "<small>Belum ada history.</small>";
+    return;
+  }
+
+  historyList.innerHTML = history
+    .slice()
+    .reverse()
+    .map(
+      h => `
+      <div class="history-item">
+        <span>${h.text}</span>
+        <button class="delete-one" data-id="${h.id}">×</button>
+      </div>
+      `
+    )
+    .join("");
+}
+
+historyList.addEventListener("click", (e)=>{
+  if(e.target.classList.contains("delete-one")){
+    const id = parseInt(e.target.dataset.id);
+    history = history.filter(h => h.id !== id);
+    updateDisplays();
+  }
+});
+
+document.getElementById("clearHistoryBtn")
+.addEventListener("click", ()=>{
+  history = [];
+  updateDisplays();
+});
+
+function handleNumber(n) {
+  if (justEvaluated) {
+    currentInput = n;
+    expression = "";
+    displayExpression = "";
+    justEvaluated = false;
+  } else {
+    currentInput = currentInput === "0" ? n : currentInput + n;
+  }
+  updateDisplays();
+}
+
+function handleDecimal() {
+  if (!currentInput.includes(".")) currentInput += ".";
+  updateDisplays();
+}
+
+function symbol(op) {
+  return op === "*" ? "×" : op === "/" ? "÷" : op;
+}
+
+function handleOperator(op) {
+  expression += currentInput + op;
+  displayExpression += currentInput + " " + symbol(op) + " ";
+  currentInput = "0";
+  justEvaluated = false;
+  updateDisplays();
+}
+
+function clearAll() {
+  currentInput = "0";
+  expression = "";
+  displayExpression = "";
+  justEvaluated = false;
+  updateDisplays();
+}
+
+function clearEntry() {
+  currentInput = "0";
+  updateDisplays();
+}
+
+function backspace() {
+  if (justEvaluated) return;
+  currentInput = currentInput.length <= 1 ? "0" : currentInput.slice(0, -1);
+  updateDisplays();
+}
+
+function handleEquals() {
+  expression += currentInput;
+
+  let result = calculateExpression(expression);
+
+  if (result === "Error" || !isFinite(result)) {
+    currentInput = "Error";
+    updateDisplays();
+    return;
+  }
+
+  const formatted =
+    Number.isInteger(result)
+      ? String(result)
+      : result.toFixed(8).replace(/\.?0+$/, "");
+
+  history.push({
+    id: historyId++,
+    text: displayExpression + currentInput + " = " + formatted,
+  });
+
+  if (history.length > 5) history = history.slice(-5);
+
+  currentInput = formatted;
+  expression = "";
+  displayExpression = "";
+  justEvaluated = true;
+
+  updateDisplays();
+}
+
+function handleMemory(type) {
+  const val = Number(currentInput);
+
+  if (type === "MC") {
+    memoryValue = 0;
+    hasMemory = false;
+  }
+
+  if (type === "MR" && hasMemory) {
+    currentInput = String(memoryValue);
+  }
+
+  if (type === "M+") {
+    memoryValue += val;
+    hasMemory = true;
+  }
+
+  if (type === "M-") {
+    memoryValue -= val;
+    hasMemory = true;
+    if (memoryValue === 0) hasMemory = false;
+  }
+
+  if (type === "MV") {
+    memoryPanel.style.display =
+      memoryPanel.style.display === "block" ? "none" : "block";
+  }
+
+  updateDisplays();
+}
+
+document.querySelectorAll("button").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const t = btn.dataset.type;
+    const v = btn.dataset.value;
+
+    if (t === "number") handleNumber(v);
+    if (t === "decimal") handleDecimal();
+    if (t === "operator") handleOperator(v);
+    if (t === "equals") handleEquals();
+    if (t === "control") {
+      if (v === "C") clearAll();
+      if (v === "CE") clearEntry();
+      if (v === "backspace") backspace();
+    }
+    if (t === "memory") handleMemory(v);
+  });
+});
+
+window.addEventListener("keydown", (e) => {
+  let k = e.key;
+
+  if (e.code.startsWith("Numpad")) {
+    const map = {
+      "Numpad0": "0", "Numpad1": "1", "Numpad2": "2", "Numpad3": "3",
+      "Numpad4": "4", "Numpad5": "5", "Numpad6": "6", "Numpad7": "7",
+      "Numpad8": "8", "Numpad9": "9",
+      "NumpadAdd": "+", "NumpadSubtract": "-", "NumpadMultiply": "*",
+      "NumpadDivide": "/", "NumpadDecimal": ".", "NumpadEnter": "Enter"
+    };
+    k = map[e.code] || k;
+  }
+
+  if (k >= "0" && k <= "9") { e.preventDefault(); handleNumber(k); }
+  else if (k === ".") { e.preventDefault(); handleDecimal(); }
+  else if (["+", "-", "*", "/"].includes(k)) { e.preventDefault(); handleOperator(k); }
+  else if (k === "Enter" || k === "=") { e.preventDefault(); handleEquals(); }
+  else if (k === "Backspace") { e.preventDefault(); backspace(); }
+  else if (k === "Escape") { e.preventDefault(); clearAll(); }
+});
+
+updateDisplays();
+
+</script>
+
+</body>
+</html>
