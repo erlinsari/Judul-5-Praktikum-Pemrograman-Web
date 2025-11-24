@@ -31,13 +31,13 @@ Setiap kali tombol "=" ditekan, hasil perhitungan akan disimpan ke dalam daftar 
 
 Fitur history memiliki beberapa karakteristik:
 
-Menampilkan hasil dari yang terbaru.
+- Menampilkan hasil dari yang terbaru.
 
-Menyimpan maksimal lima riwayat perhitungan.
+- Menyimpan maksimal lima riwayat perhitungan.
 
-Pengguna dapat menghapus satu riwayat dengan tombol “x”.
+- Pengguna dapat menghapus satu riwayat dengan tombol “x”.
 
-Pengguna dapat menghapus seluruh riwayat dengan tombol “Hapus History”.
+- Pengguna dapat menghapus seluruh riwayat dengan tombol “Hapus History”.
 
 
 3. Indikator Memory
@@ -55,3 +55,4 @@ Ketika pengguna menekan MR (Memory Recall), nilai memory akan ditampilkan pada d
 Jika pengguna hanya menggunakan memory tanpa menekan tombol “=”, maka history akan tetap menampilkan pesan:
 
 Belum ada history.
+
